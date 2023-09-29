@@ -36,17 +36,17 @@ export default class AddPointPresenter {
     document.addEventListener('keydown', this.#escKeyDownHandler);
   }
 
-  destroy() {
-    if (this.#pointEditComponent === null) {
+  destroy({isCanceled = true} = {}) {
+    if (!this.#pointEditComponent) {
       return;
     }
-
-    this.#handleDestroy();
+    this.#handleDestroy({isCanceled});
 
     remove(this.#pointEditComponent);
     this.#pointEditComponent = null;
 
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+
   }
 
   #handleFormSubmit = (point) => {

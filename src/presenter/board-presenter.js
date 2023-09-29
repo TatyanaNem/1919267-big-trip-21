@@ -18,16 +18,18 @@ export default class BoardPresenter {
   #pointPresenters = new Map();
   #emptyListComponent = null;
   #addPointPresenter = null;
+  #addPointButtonPresenter = null;
 
-  constructor({pointsBoardContainer, pointsModel, filterModel, onAddPointDestroy}) {
+  constructor({pointsBoardContainer, pointsModel, filterModel, addPointButtonPresenter}) {
     this.#pointsBoardContainer = pointsBoardContainer;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
+    this.#addPointButtonPresenter = addPointButtonPresenter;
 
     this.#addPointPresenter = new AddPointPresenter({
       container: this.#pointsListComponent.element,
       onDataChange: this.#handleViewAction,
-      onDestroy: onAddPointDestroy
+      onDestroy: this.#addPointDestroyHandler
     });
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
@@ -83,15 +85,16 @@ export default class BoardPresenter {
     }
   };
 
-  createPoint() {
+  createPoint = () => {
     this.#currentSortType = DEFAULT_SORT_TYPE;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#addPointButtonPresenter.disableButton();
     this.#addPointPresenter.init(this.destinations, this.offers);
 
     if(this.#emptyListComponent !== null) {
       remove(this.#emptyListComponent);
     }
-  }
+  };
 
   #renderPoint(point) {
     const pointPresenter = new PointPresenter({
@@ -181,5 +184,13 @@ export default class BoardPresenter {
   #modeChangeHandler = () => {
     this.#addPointPresenter.destroy();
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
+  };
+
+  #addPointDestroyHandler = ({isCanceled}) => {
+    this.#addPointButtonPresenter.enableButton();
+    if (this.points.length === 0 && isCanceled) {
+      this.#clearBoard();
+      this.#renderBoard();
+    }
   };
 }
