@@ -1,9 +1,17 @@
 import dayjs from 'dayjs';
 import { SortType } from '../const';
 
-function getPointsDateDifference(pointA, pointB) {
-  return dayjs(pointB.dateFrom).diff(dayjs(pointA.dateFrom));
+function getPointsDifferenceByDateFrom(pointA, pointB) {
+  return pointA.dateFrom - pointB.dateFrom;
 }
+
+function getPointsDifferenceByDateTo(pointA, pointB) {
+  return pointA.dateTo - pointB.dateTo;
+}
+
+// function getPointsDateDifference(pointA, pointB) {
+//   return dayjs(pointB.dateFrom).diff(dayjs(pointA.dateFrom));
+// }
 
 function getPointsDurationDifference(eventA, eventB) {
   const pointADuration = dayjs(eventA.dateTo).diff(dayjs(eventA.dateFrom));
@@ -16,7 +24,7 @@ function getPointsPriceDifference(pointA, pointB) {
 }
 
 const sorting = {
-  [SortType.DAY]: (points) => [...points].sort(getPointsDateDifference),
+  [SortType.DAY]: (points) => [...points].sort(getPointsDifferenceByDateFrom),
   [SortType.PRICE]: (points) => [...points].toSorted(getPointsPriceDifference),
   [SortType.TIME]: (points) => [...points].toSorted(getPointsDurationDifference),
   [SortType.EVENT]: () => {
@@ -27,4 +35,4 @@ const sorting = {
   }
 };
 
-export {sorting};
+export {sorting, getPointsDifferenceByDateTo, getPointsDifferenceByDateFrom};

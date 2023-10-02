@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import { destinations } from './destinations.js';
 import { Price, eventTypes } from '../const.js';
+import {offers} from './offers.js';
 import {getMaxDate, getMinDate, getRandomArrayElement, getRandomPositiveInteger} from '../utils/common.js';
 
 class MockPoint {
@@ -15,6 +16,7 @@ class MockPoint {
     this.dateTo = dayjs(getMaxDate(date1, date2)).toDate();
     this.basePrice = getRandomPositiveInteger(Price.MIN, Price.MAX);
     this.isFavorite = Boolean(getRandomPositiveInteger(0, 1));
+    this.offers = offers.find((item) => item.type === this.type).offers.map((item) => item.id);
   }
 }
 

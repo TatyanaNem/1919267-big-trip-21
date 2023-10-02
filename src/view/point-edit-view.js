@@ -55,7 +55,12 @@ function createPointEditTemplate(point, offers, destinations) {
   const createTypeOffersTemplate = () => pointOffers.offers.map((offer) => {
     const isChecked = offers.includes(offer.id) ? 'checked' : '';
     return `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" data-id="${he.encode(offer.id)}" id="event-offer-${he.encode(offer.id)}" type="checkbox" name="event-offer-${he.encode(offer.id)}" ${isChecked}>
+      <input class="event__offer-checkbox  visually-hidden"
+        data-id="${he.encode(offer.id)}"
+        id="event-offer-${he.encode(offer.id)}"
+        type="checkbox" name="event-offer-${he.encode(offer.id)}"
+        ${isChecked}
+      />
       <label class="event__offer-label" for="event-offer-${he.encode(offer.id)}">
         <span class="event__offer-title">${he.encode(offer.title)}</span>
         &plus;&euro;&nbsp;
@@ -281,10 +286,14 @@ export default class PointEditView extends AbstractStatefulView {
   };
 
   #offerChangeHandler = (evt) => {
-    evt.preventDefault();
-    const checkedOffers = Array.from(this.element.querySelectorAll('.event__offer-checkbox:checked'));
+    if (!evt.target.classList.contains('event__offer-checkbox')) {
+      return;
+    }
+
+    const checkedOffers = this._state.offers;
     const updatedCheckedOffers = [];
-    checkedOffers.map((element) => updatedCheckedOffers.push(element.dataset.id));
+    const selectedOfferId = evt.target.dataset.id;
+    checkedOffers.push(selectedOfferId);
     this._setState({
       offers: updatedCheckedOffers,
     });

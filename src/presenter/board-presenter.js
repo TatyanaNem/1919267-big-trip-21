@@ -11,6 +11,7 @@ import AddPointPresenter from './add-point-presenter.js';
 export default class BoardPresenter {
   #pointsModel = null;
   #filterModel = null;
+  #offersModel = null;
   #pointsBoardContainer = null;
   #pointSortComponent = null;
   #currentSortType = DEFAULT_SORT_TYPE;
@@ -20,10 +21,11 @@ export default class BoardPresenter {
   #addPointPresenter = null;
   #addPointButtonPresenter = null;
 
-  constructor({pointsBoardContainer, pointsModel, filterModel, addPointButtonPresenter}) {
+  constructor({pointsBoardContainer, pointsModel, filterModel, offersModel, addPointButtonPresenter}) {
     this.#pointsBoardContainer = pointsBoardContainer;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
+    this.#offersModel = offersModel;
     this.#addPointButtonPresenter = addPointButtonPresenter;
 
     this.#addPointPresenter = new AddPointPresenter({
@@ -48,7 +50,7 @@ export default class BoardPresenter {
   }
 
   get offers() {
-    return this.#pointsModel.offers;
+    return this.#offersModel.offers;
   }
 
   init() {
@@ -99,10 +101,11 @@ export default class BoardPresenter {
   #renderPoint(point) {
     const pointPresenter = new PointPresenter({
       pointsListContainer: this.#pointsListComponent.element,
+      offersModel: this.#offersModel,
       onDataChange: this.#handleViewAction,
       onModeChange: this.#modeChangeHandler
     });
-    pointPresenter.init(point, this.destinations, this.offers);
+    pointPresenter.init(point, this.destinations);
     this.#pointPresenters.set(point.id, pointPresenter);
   }
 

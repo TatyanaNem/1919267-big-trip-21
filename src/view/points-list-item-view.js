@@ -3,20 +3,26 @@ import { DateFormat } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
 import { formatDate, getDuration } from '../utils/common.js';
 
-function createOfferTemplate(offer) {
-  return `<li class="event__offer">
+function getCheckedOffers(allOffers, pointOffersIDs) {
+  const checkedOffers = [];
+  pointOffersIDs.map((id) => checkedOffers.push(allOffers.offers.find((item) => item.id === id)));
+  return checkedOffers;
+}
+
+function createOfferTemplate(offers) {
+  return offers.map((offer) => `<li class="event__offer">
     <span class="event__offer-title">${he.encode(offer.title)}</span>
     &plus;&euro;&nbsp;
     <span class="event__offer-price">${he.encode(String(offer.price))}</span>
-  </li>`;
+  </li>`
+  ).join('');
 }
 
-function createPointsListItemTemplate(point, destinations, offers) {
-  const {type, destination, basePrice, dateFrom, dateTo, isFavorite} = point;
+function createPointsListItemTemplate(point, destinations, allOffers) {
+  const {type, destination, basePrice, dateFrom, dateTo, isFavorite, offers} = point;
 
   const pointDestination = destinations.find((item) => item.id === destination.id);
 
-  const pointOffers = offers.find((item) => item.type === type);
   return (
     `<li class="trip-events__item">
       <div class="event">
@@ -38,7 +44,7 @@ function createPointsListItemTemplate(point, destinations, offers) {
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          ${pointOffers.offers.reduce((acc, offer) => acc + createOfferTemplate(offer), '')}
+          ${createOfferTemplate(getCheckedOffers(allOffers, offers))}
         </ul>
         <button class="event__favorite-btn ${isFavorite ? 'event__favorite-btn--active' : 'event__favorite-btn'}" type="button">
           <span class="visually-hidden">Add to favorite</span>

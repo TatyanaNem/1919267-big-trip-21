@@ -10,7 +10,6 @@ export default class PointPresenter {
   #pointEditComponent = null;
   #point = null;
   #destionations = [];
-  #offers = [];
   #offersModel = null;
   #handleDataChange = null;
   #handleModeChange = null;
@@ -23,10 +22,9 @@ export default class PointPresenter {
     this.#handleModeChange = onModeChange;
   }
 
-  init(point, destinations, offers) {
+  init(point, destinations) {
     this.#point = point;
     this.#destionations = destinations;
-    this.#offers = offers;
 
     const prevPointComponent = this.#pointComponent;
     const prevPointEditComponent = this.#pointEditComponent;
@@ -34,7 +32,7 @@ export default class PointPresenter {
     this.#pointComponent = new PointsListItemView({
       point: this.#point,
       destinations: this.#destionations,
-      offers: this.#offers,
+      offers: this.#offersModel.offers.find((item) => item.type === this.#point.type),
       onDataChange: this.#handleDataChange,
       onArrowClick: () => {
         this.#replaceCardToForm();
@@ -46,7 +44,7 @@ export default class PointPresenter {
     this.#pointEditComponent = new PointEditView({
       point: this.#point,
       destinations: this.#destionations,
-      offers: this.#offers,
+      offers: this.#offersModel.offers,
       onFormSubmit: this.#handleFormSubmit,
       onArrowClick: this.#handleFormCollapse,
       onDeleteButtonClick: this.#handleDeleteClick,
